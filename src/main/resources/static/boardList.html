@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Articles List</title>
+
+  <!-- Add Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h1 class="mt-4">게시판</h1>
+  <!-- Add the "글 작성" link -->
+  <a href="/newArticleForm.html" class="btn btn-primary mt-2">글 작성</a>
+
+  <ul id="articlesList" class="list-group mt-4">
+    <!-- Articles will be dynamically added here -->
+  </ul>
+</div>
+<!-- Add Bootstrap JS (required for some components) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    fetchArticles();
+  });
+
+  async function fetchArticles() {
+    try {
+      const response = await fetch("/api/articles");
+      const articles = await response.json();
+      displayArticles(articles);
+    } catch (error) {
+      console.error("Error fetching articles:", error);
+    }
+  }
+
+  function displayArticles(articles) {
+    const articlesList = document.getElementById("articlesList");
+
+    articles.forEach(article => {
+      if (article.id >= 10) { // Filter articles with ID greater than or equal to 10
+        const listItem = document.createElement("li");
+        listItem.className = "list-group-item";
+        listItem.innerHTML = `
+                <strong>${article.title}</strong><br><br>
+                <button class="btn btn-primary" onclick="handleButtonClick(${article.id})">자세히</button>
+            `;
+        articlesList.appendChild(listItem);
+      }
+    });
+  }
+
+  function handleButtonClick(articleId) {
+    // Redirect to the article page with the corresponding article ID
+    window.location.href = `/notice.html?id=${articleId}`;
+  }
+
+</script>
+</body>
+</html>
